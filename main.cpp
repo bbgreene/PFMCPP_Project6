@@ -30,10 +30,8 @@ struct Tcomparison                                //4
 {
     T* compare(T& a, T& b) //5
     {
-        {
-            if( a.value < b.value ) return &a;
-            if( a.value > b.value ) return &b;
-        }
+        if( a.value < b.value ) return &a;
+        if( a.value > b.value ) return &b;
         return nullptr;
     }
 };
@@ -43,19 +41,15 @@ struct U
     float val1 { 0 }, val2 { 0 };
     float staticFunction(float& updatedVal)      //12
     {
+        std::cout << "U's val1 value: " << this->val1 << std::endl;
+        this->val1 = updatedVal;
+        std::cout << "U's val1 updated value: " << this->val1 << std::endl;
+
+        while( std::abs(this->val2 - this->val1) > 0.001f )
         {
-            std::cout << "U's val1 value: " << this->val1 << std::endl;
-            this->val1 = updatedVal;
-            std::cout << "U's val1 updated value: " << this->val1 << std::endl;
-
-            while( std::abs(this->val2 - this->val1) > 0.001f )
-            {
-                this->val2 += this->val1 / 3;
-            }
-
-            std::cout << "U's val2 updated value: " << this->val2 << std::endl;
-
+            this->val2 += this->val1 / 3;
         }
+        std::cout << "U's val2 updated value: " << this->val2 << std::endl;
         return this->val2 * this->val1;
     }
 };
@@ -64,21 +58,18 @@ struct S
 {
     static float staticFunction(U& that, float& updatedVal)        //10
     {
-        {
-            std::cout << "U's val1 value: " << that.val1 << std::endl;
-            that.val1 = updatedVal;
-            std::cout << "U's val1 updated value: " << that.val1 << std::endl;
+        std::cout << "U's val1 value: " << that.val1 << std::endl;
+        that.val1 = updatedVal;
+        std::cout << "U's val1 updated value: " << that.val1 << std::endl;
         
-            while( std::abs(that.val2 - that.val1) > 0.001f )
-            {
-                /*
-                write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-                */
-                that.val2 += that.val1 / 3;
-            }
-            
-            std::cout << "U's val2 updated value: " << that.val2 << std::endl;
+        while( std::abs(that.val2 - that.val1) > 0.001f )
+        {
+            /*
+            write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+            */
+            that.val2 += that.val1 / 3;
         }
+        std::cout << "U's val2 updated value: " << that.val2 << std::endl;
         return that.val2 * that.val1;
     }
 };
