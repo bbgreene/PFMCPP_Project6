@@ -28,13 +28,10 @@ struct T
 
 struct Tcomparison                                //4
 {
-    T* compare(T* a, T* b) //5
+    T* compare(T& a, T& b) //5
     {
-        if(a != nullptr && b != nullptr)
-        {
-            if( a->value < b->value ) return a;
-            if( a->value > b->value ) return b;
-        }
+        if( a.value < b.value ) return &a;
+        if( a.value > b.value ) return &b;
         return nullptr;
     }
 };
@@ -42,47 +39,38 @@ struct Tcomparison                                //4
 struct U
 {
     float val1 { 0 }, val2 { 0 };
-    float staticFunction(float* updatedVal)      //12
+    float staticFunction(float& updatedVal)      //12
     {
-        if (updatedVal != nullptr)
+        std::cout << "U's val1 value: " << this->val1 << std::endl;
+        this->val1 = updatedVal;
+        std::cout << "U's val1 updated value: " << this->val1 << std::endl;
+
+        while( std::abs(this->val2 - this->val1) > 0.001f )
         {
-            std::cout << "U's val1 value: " << this->val1 << std::endl;
-            this->val1 = *updatedVal;
-            std::cout << "U's val1 updated value: " << this->val1 << std::endl;
-
-            while( std::abs(this->val2 - this->val1) > 0.001f )
-            {
-                this->val2 += this->val1 / 3;
-            }
-
-            std::cout << "U's val2 updated value: " << this->val2 << std::endl;
-
+            this->val2 += this->val1 / 3;
         }
+        std::cout << "U's val2 updated value: " << this->val2 << std::endl;
         return this->val2 * this->val1;
     }
 };
 
 struct S
 {
-    static float staticFunction(U* that, float* updatedVal)        //10
+    static float staticFunction(U& that, float& updatedVal)        //10
     {
-        if(that != nullptr && updatedVal != nullptr)
-        {
-            std::cout << "U's val1 value: " << that->val1 << std::endl;
-            that->val1 = *updatedVal;
-            std::cout << "U's val1 updated value: " << that->val1 << std::endl;
+        std::cout << "U's val1 value: " << that.val1 << std::endl;
+        that.val1 = updatedVal;
+        std::cout << "U's val1 updated value: " << that.val1 << std::endl;
         
-            while( std::abs(that->val2 - that->val1) > 0.001f )
-            {
-                /*
-                write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
-                */
-                that->val2 += that->val1 / 3;
-            }
-            
-            std::cout << "U's val2 updated value: " << that->val2 << std::endl;
+        while( std::abs(that.val2 - that.val1) > 0.001f )
+        {
+            /*
+            write something that makes the distance between that-><#name2#> and that-><#name1#> get smaller
+            */
+            that.val2 += that.val1 / 3;
         }
-        return that->val2 * that->val1;
+        std::cout << "U's val2 updated value: " << that.val2 << std::endl;
+        return that.val2 * that.val1;
     }
 };
         
@@ -106,7 +94,7 @@ int main()
     T t2(21 , "Second name");                                             //6
     
     Tcomparison f;                                            //7
-    auto* smaller = f.compare(&t1, &t2);                              //8
+    auto* smaller = f.compare(t1, t2);                              //8
     if(smaller != nullptr)
     {
         std::cout << "the smaller one is << " << smaller->name << std::endl; //9
@@ -114,10 +102,10 @@ int main()
     
     U u1;
     float updatedValue = 5.f;
-    std::cout << "[static func] u1's multiplied values: " << S::staticFunction(&u1, &updatedValue) << std::endl;                  //11
+    std::cout << "[static func] u1's multiplied values: " << S::staticFunction(u1, updatedValue) << std::endl;                  //11
     
     U u2;
-    std::cout << "[member func] u2's multiplied values: " << u2.staticFunction(&updatedValue) << std::endl;
+    std::cout << "[member func] u2's multiplied values: " << u2.staticFunction(updatedValue) << std::endl;
 }
 
         
